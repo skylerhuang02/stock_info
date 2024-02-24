@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request
-from .alphavantage import get_stock_info, get_news, get_quote, get_52_week_high_low, get_daily_time_series
+from .alphavantage import get_stock_info, get_news, get_quote, get_52_week_high_low, check_and_update_data
 
 main = Blueprint('main', __name__)
 
@@ -17,5 +17,9 @@ def stock_info():
     news = get_news(stock_symbol)
     quote = get_quote(stock_symbol)
     high_52, low_52 = get_52_week_high_low(stock_symbol)
-    dates, closing_prices = get_daily_time_series(stock_symbol)
+    
+    stock_data = check_and_update_data(stock_symbol)
+    dates = [row[1] for row in stock_data]
+    closing_prices = [row[5] for row in stock_data]
+    #dates, closing_prices = get_daily_time_series(stock_symbol)
     return render_template('stock_info.html', data=data, news = news, quote = quote, high_52 = high_52, low_52 = low_52, dates = dates, closing_prices = closing_prices)
