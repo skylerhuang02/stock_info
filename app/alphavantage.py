@@ -153,12 +153,13 @@ def check_and_update_data(symbol):
         if new_data:
             store_stock_data_to_db(new_data)
             print(f"Data for {symbol} fetched from API and stored in database.")
-            return new_data
+            existing_data = check_stock_data_in_db(symbol)
         else:
             print(f"Failed to fetch data for {symbol} from API.")
             return None
     else:
         print(f"Using existing data for {symbol} from database.")
-        one_year_ago = datetime.now() - timedelta(days=365)
-        filtered_data = [row for row in existing_data if datetime.strptime(row[1], '%Y-%m-%d') >= one_year_ago]
-        return filtered_data
+        
+    one_year_ago = datetime.now() - timedelta(days=365)
+    filtered_data = [row for row in existing_data if datetime.strptime(row[1], '%Y-%m-%d') >= one_year_ago]
+    return filtered_data
